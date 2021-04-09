@@ -3,6 +3,7 @@ namespace SpriteKind {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.bossEnemy, function (sprite, otherSprite) {
     info.changeLifeBy(-3)
+    otherSprite.destroy(effects.spray, 500)
     music.spooky.play()
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -198,7 +199,7 @@ spacePlane = sprites.create(img`
     `, SpriteKind.Player)
 controller.moveSprite(spacePlane)
 spacePlane.setStayInScreen(true)
-info.setLife(3)
+info.setLife(6)
 game.onUpdateInterval(15000, function () {
     bossAlienSprite = sprites.create(img`
         ......ffff....................
@@ -234,7 +235,7 @@ game.onUpdateInterval(15000, function () {
         `, SpriteKind.bossEnemy)
     bossAlienSprite.setVelocity(-30, 0)
     bossAlienSprite.setPosition(160, randint(0, 130))
-    bossHealth = 3
+    bossHealth = 6
 })
 game.onUpdateInterval(1000, function () {
     bossAlienSprite = sprites.create(img`
