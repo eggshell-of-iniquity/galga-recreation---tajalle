@@ -1,10 +1,113 @@
 namespace SpriteKind {
     export const bossEnemy = SpriteKind.create()
+    export const chargedProjectile = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.chargedProjectile, SpriteKind.bossEnemy, function (sprite, otherSprite) {
+    sprite.destroy(effects.disintegrate, 500)
+    bossHealth += -3
+    music.thump.play()
+    if (bossHealth == 0) {
+        otherSprite.destroy(effects.fire, 500)
+        music.zapped.play()
+        protagSprite.say("Whew...", 500)
+    }
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.bossEnemy, function (sprite, otherSprite) {
     info.changeLifeBy(-3)
     otherSprite.destroy(effects.spray, 500)
+    sprite.setImage(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . f f f f f f . . . . . . 
+        . . . f 2 f e e e e f f . . . . 
+        . . f 2 2 2 f e e e e f f . . . 
+        . . f e e e e f f e e e f . . . 
+        . f e 2 2 2 2 e e f f f f . . . 
+        . f 2 e f f f f 2 2 2 e f . . . 
+        . f f f e e e f f f f f f f . . 
+        . f e e 4 4 f b e 4 4 e f f . . 
+        . . f e d d f 1 4 d 4 e e f . . 
+        . . . f d d d d 4 e e e f . . . 
+        . . . f e 4 4 4 e d d 4 . . . . 
+        . . . f 2 2 2 2 e d d e . . . . 
+        . . f f 5 5 4 4 f e e f . . . . 
+        . . f f f f f f f f f f . . . . 
+        . . . f f f . . . f f . . . . . 
+        `)
+    pause(200)
+    sprite.setImage(img`
+        ........................
+        ......ffff..............
+        ....fff22fff............
+        ...fff2222fff...........
+        ..fffeeeeeefff..........
+        ..ffe222222eef..........
+        ..fe2ffffff2ef..........
+        ..ffffeeeeffff..........
+        .ffefbf44fbfeff.........
+        .fee41fddf14eef.........
+        fdfeeddddd4eff..........
+        fbffee444edd4e..........
+        fbf4f2222edde...........
+        fcf.f22cccee............
+        .ff.f44cdc4f............
+        ....fffddcff............
+        .....fddcff.............
+        ....cddc................
+        ....cdc.................
+        ....cc..................
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    sprite.say("OOMF!", 500)
     music.powerDown.play()
+})
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    protagSprite.setImage(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . f f f f f f . . . . . 
+        . . . f f e e e e f 2 f . . . . 
+        . . f f e e e e f 2 2 2 f . . . 
+        . . f e e e f f e e e e f . . . 
+        . . f f f f e e 2 2 2 2 e f . . 
+        . . f e 2 2 2 f f f f e 2 f . . 
+        . f f f f f f f e e e f f f . . 
+        . f f e 4 4 e b f 4 4 e e f . . 
+        . f e e 4 d 4 1 f d d e f f . . 
+        . . f e e e 4 d d d d f d d f . 
+        . . . . f e e 4 e e e f b b f . 
+        . . . . f 2 2 2 4 d d e b b f . 
+        . . . f f 4 4 4 e d d e b f . . 
+        . . . f f f f f f e e f f . . . 
+        . . . . f f . . . f f f . . . . 
+        `)
+    protagSprite.say("hii...")
+    music.beamUp.play()
+    pause(3000)
+    protagSprite.say("...YAAAH!", 200)
+    music.pewPew.play()
+    for (let index = 0; index < 7; index++) {
+        playerChargedLaser = sprites.createProjectileFromSprite(img`
+            . . . a a a a a a a a a a a . . 
+            . . a a 9 9 9 9 9 9 9 9 9 a a . 
+            . a a 9 9 8 8 8 8 8 8 8 9 9 a a 
+            . a 9 9 8 8 9 8 8 8 8 8 8 9 9 a 
+            . a 9 8 8 8 8 8 9 8 8 8 8 8 9 a 
+            . a 9 8 8 8 8 8 8 9 8 8 8 8 9 a 
+            . a 9 8 8 9 8 8 8 8 8 8 8 8 9 a 
+            . a 9 8 9 8 8 8 8 8 8 8 9 8 9 a 
+            . a 9 8 8 8 8 9 8 8 9 8 8 8 9 a 
+            . a 9 8 8 8 8 8 9 8 8 9 8 8 9 a 
+            . a 9 8 8 8 9 8 8 8 8 8 8 8 9 a 
+            . a 9 9 8 8 8 8 8 8 9 8 8 9 9 a 
+            . a a 9 9 8 8 8 9 8 8 8 9 9 a a 
+            . . a a 9 9 9 9 9 9 9 9 9 a a . 
+            . . . a a a a a a a a a a a . . 
+            . . . . . . . . . . . . . . . . 
+            `, protagSprite, randint(0, 100), randint(0, 100))
+        playerChargedLaser.setKind(SpriteKind.chargedProjectile)
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     playerLaser = sprites.createProjectileFromSprite(img`
@@ -52,7 +155,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         ........................
         ........................
         `)
-    pause(700)
+    pause(400)
     protagSprite.setImage(img`
         ........................
         ......ffff..............
@@ -87,21 +190,75 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.bossEnemy, function (sprite,
     if (bossHealth == 0) {
         otherSprite.destroy(effects.fire, 500)
         music.zapped.play()
+        protagSprite.say("Woohoo!", 500)
     }
+})
+sprites.onOverlap(SpriteKind.chargedProjectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprite.destroy(effects.disintegrate, 500)
+    otherSprite.destroy(effects.fire, 500)
+    music.bigCrash.play()
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprite.destroy(effects.disintegrate, 500)
     otherSprite.destroy(effects.fire, 500)
     music.bigCrash.play()
+    protagSprite.say("Boom!", 500)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     info.changeLifeBy(-1)
     otherSprite.destroy(effects.fire, 500)
+    sprite.setImage(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . f f f f f f . . . . . . 
+        . . . f 2 f e e e e f f . . . . 
+        . . f 2 2 2 f e e e e f f . . . 
+        . . f e e e e f f e e e f . . . 
+        . f e 2 2 2 2 e e f f f f . . . 
+        . f 2 e f f f f 2 2 2 e f . . . 
+        . f f f e e e f f f f f f f . . 
+        . f e e 4 4 f b e 4 4 e f f . . 
+        . . f e d d f 1 4 d 4 e e f . . 
+        . . . f d d d d 4 e e e f . . . 
+        . . . f e 4 4 4 e d d 4 . . . . 
+        . . . f 2 2 2 2 e d d e . . . . 
+        . . f f 5 5 4 4 f e e f . . . . 
+        . . f f f f f f f f f f . . . . 
+        . . . f f f . . . f f . . . . . 
+        `)
+    pause(200)
+    sprite.setImage(img`
+        ........................
+        ......ffff..............
+        ....fff22fff............
+        ...fff2222fff...........
+        ..fffeeeeeefff..........
+        ..ffe222222eef..........
+        ..fe2ffffff2ef..........
+        ..ffffeeeeffff..........
+        .ffefbf44fbfeff.........
+        .fee41fddf14eef.........
+        fdfeeddddd4eff..........
+        fbffee444edd4e..........
+        fbf4f2222edde...........
+        fcf.f22cccee............
+        .ff.f44cdc4f............
+        ....fffddcff............
+        .....fddcff.............
+        ....cddc................
+        ....cdc.................
+        ....cc..................
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    sprite.say("Yeowch!", 500)
     music.bigCrash.play()
 })
 let bossSprite: Sprite = null
-let bossHealth = 0
 let playerLaser: Sprite = null
+let playerChargedLaser: Sprite = null
+let bossHealth = 0
 let protagSprite: Sprite = null
 scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -283,7 +440,7 @@ game.onUpdateInterval(15000, function () {
         `, SpriteKind.bossEnemy)
     bossSprite.setVelocity(-30, 0)
     bossSprite.setPosition(160, randint(0, 130))
-    bossHealth = 3
+    bossHealth = 6
 })
 game.onUpdateInterval(1000, function () {
     bossSprite = sprites.create(img`
@@ -306,4 +463,32 @@ game.onUpdateInterval(1000, function () {
         `, SpriteKind.Enemy)
     bossSprite.setVelocity(-50, 0)
     bossSprite.setPosition(160, randint(0, 130))
+})
+forever(function () {
+    for (let index = 0; index < 2; index++) {
+        music.playMelody("D A A A A A D A ", 200)
+        music.playMelody("A B C5 B B B B B ", 200)
+        music.playMelody("G A A D D D D D ", 200)
+        music.playMelody("G E F E E E E E ", 200)
+        music.playMelody("C D D D D D D D ", 200)
+        music.playMelody("D D D D D D D D ", 200)
+    }
+    music.playMelody("A B C5 C5 C5 C5 A C5 ", 200)
+    music.playMelody("B A G G G G F G ", 200)
+    music.playMelody("A A A A A A D A ", 200)
+    music.playMelody("G F E E E E A B ", 200)
+    music.playMelody("C5 C5 C5 C5 C5 C5 A C5 ", 200)
+    music.playMelody("B C5 D D D D D D ", 200)
+    music.playMelody("C C C C C C B C5 ", 200)
+    music.playMelody("B A B B B B B B ", 200)
+    music.playMelody("A A A A B B B B ", 200)
+    music.playMelody("C5 C5 C5 C5 B B B B ", 200)
+    music.playMelody("D A G A A A D D ", 200)
+    music.playMelody("C A G A A A A A ", 200)
+    music.playMelody("C5 A G A A A C5 C5 ", 200)
+    music.playMelody("B F E F F F F F ", 200)
+    music.playMelody("A E D E E E A A ", 200)
+    music.playMelody("D A G A A A D D ", 200)
+    music.playMelody("E E E E E E E E ", 200)
+    music.playMelody("E E E E E E E E ", 200)
 })
